@@ -1,0 +1,109 @@
+#include <stdio.h>
+#include <conio.h>
+#include <time.h>
+#include <stdlib.h>
+#define MAX_SIZE 100000
+
+void heap_sort(int [], int, int);
+void heap_adjust(int, int);
+int arr_sort[MAX_SIZE], t, a;
+int i, j, section, upper=10000;
+time_t ti;
+clock_t start, end;
+double time_spent;
+
+int main()
+{
+    srand((unsigned) time(&ti));
+    printf("\nGenerate %d Numbers in RANDOM order. Press any key to continue...\n\n", MAX_SIZE);
+    getch();
+    for(j=0;j<MAX_SIZE;j++)
+    {
+        arr_sort[j]=(rand()*rand())%100001;
+        printf("###%d: %d\t\t", j, arr_sort[j]);
+    }
+
+    printf("\n\n");
+    for(section=0;section<10;section++)
+    {
+        printf("\n\n**********SECTION: %d**********\n",section);
+
+        //Start clock
+        start = clock();
+
+        for(j=0;j<((upper+(section*10000))&&(upper<=MAX_SIZE));j++)
+        {
+            heap_sort(arr_sort, 0, upper); 
+        }
+
+        //End clock
+        end = clock();
+
+        //To calculate running time for sorting
+        time_spent = (float)(end - start) / CLOCKS_PER_SEC;
+
+        printf("i. Number of data: %d\n", upper);
+        upper=upper+10000;
+        printf("ii. Time complexity: %f\n", time_spent);
+    }
+
+    printf("\n\n********************SORTED DATA********************\n");
+    //Remove "/*" at line 52 and 55 to see all sorted 100,000 numbers
+    /*for (i = 0; i < MAX_SIZE; i++)
+    {
+        printf("###%d: %d\t\t", i, arr_sort[i]);
+    }*/
+    printf("\nPress any key to continue...\n\n");
+    getch();
+    return 0;
+}
+
+void heap_sort(int data[], int left_index, int right_index) {
+    for (i = right_index / 2 - 1; i >= 0; i--)
+    {   
+        heap_adjust(right_index, i); 
+    }
+
+    for (i = (right_index - 1); i >= 0; i--)
+    {   
+        //Swapping Values
+        t = arr_sort[0]; 
+        arr_sort[0] = arr_sort[i]; 
+        arr_sort[i] = t;
+        heap_adjust(i, 0); 
+
+        //Remove "/*" at line 76 and 81 to see numbers sorted in each iteration
+        /*printf("\nHeap Sort Iteration %d : \n", i);
+        for (a = 0; a < MAX_SIZE; a++)
+        {
+            printf("****%d: %d\t",a , arr_sort[a]);
+        }
+        printf("\n\n");*/
+    }
+}
+
+void heap_adjust(int n, int i) {
+
+    int large = i, left = 2 * i + 1, right = 2 * i + 2;
+
+    // adjest left child
+    if ((left < n)&& (arr_sort[left] > arr_sort[large]))
+    {   
+        large = left; 
+    }
+
+    // adjest right child
+    if ((right < n) && (arr_sort[right] > arr_sort[large]))
+    {   
+        large = right; 
+    }
+
+    if (large != i)
+    {  
+        //Swapping Values
+        t = arr_sort[i];
+        arr_sort[i] = arr_sort[large]; 
+        arr_sort[large] = t; 
+        heap_adjust(n, large); 
+    }
+}
